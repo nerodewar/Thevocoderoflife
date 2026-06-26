@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Vocoder Of Life | James Ritchie</title>
+
+  <style>
+    :root {
+      --midnight: #030914;
+      --deep-blue: #071833;
+      --blue-glow: #12386a;
+      --gold: #f4d889;
+      --soft-gold: #fff1b8;
+      --pearl: #f8f5e9;
+      --muted: #b8c4d8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--pearl);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255, 229, 156, 0.32), transparent 18%),
+        radial-gradient(circle at 50% 65%, rgba(244, 216, 137, 0.16), transparent 22%),
+        radial-gradient(circle at 10% 20%, rgba(45, 108, 181, 0.18), transparent 25%),
+        radial-gradient(circle at 90% 75%, rgba(45, 108, 181, 0.15), transparent 28%),
+        linear-gradient(180deg, #020713 0%, #071833 45%, #020713 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px),
+        radial-gradient(circle, rgba(244,216,137,0.5) 1px, transparent 1px);
+      background-size: 90px 90px, 140px 140px;
+      opacity: 0.18;
+    }
+
+    .page {
+      position: relative;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 48px 24px;
+    }
+
+    .orb {
+      position: absolute;
+      top: 28px;
+      width: 230px;
+      height: 230px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,241,184,0.95) 7%, rgba(244,216,137,0.38) 22%, transparent 64%);
+      filter: blur(0.4px);
+      box-shadow:
+        0 0 45px rgba(255, 238, 174, 0.8),
+        0 0 130px rgba(244, 216, 137, 0.35);
+      opacity: 0.95;
+    }
+
+    .orb::before,
+    .orb::after {
+      content: "";
+      position: absolute;
+      inset: -60px;
+      border: 1px solid rgba(244, 216, 137, 0.18);
+      border-radius: 50%;
+    }
+
+    .orb::after {
+      inset: -105px;
+      border-color: rgba(244, 216, 137, 0.1);
+    }
+
+    .landing {
+      position: relative;
+      width: min(1160px, 100%);
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 56px;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .cover-wrap {
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .cover-wrap::before {
+      content: "";
+      position: absolute;
+      width: 82%;
+      height: 82%;
+      bottom: -18px;
+      border-radius: 26px;
+      background: rgba(244, 216, 137, 0.2);
+      filter: blur(38px);
+      z-index: -1;
+    }
+
+    .cover {
+      width: min(390px, 90vw);
+      border-radius: 10px;
+      border: 1px solid rgba(244, 216, 137, 0.45);
+      box-shadow:
+        0 24px 80px rgba(0, 0, 0, 0.65),
+        0 0 42px rgba(244, 216, 137, 0.18);
+    }
+
+    .content {
+      text-align: center;
+      padding: 24px 0;
+    }
+
+    .kicker {
+      color: var(--gold);
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: clamp(3.1rem, 8vw, 7rem);
+      line-height: 0.86;
+      font-weight: 500;
+      color: var(--soft-gold);
+      text-shadow:
+        0 0 18px rgba(244, 216, 137, 0.32),
+        0 0 46px rgba(244, 216, 137, 0.14);
+      margin-bottom: 22px;
+    }
+
+    h1 span {
+      display: block;
+      font-size: 0.72em;
+    }
+
+    .subtitle {
+      max-width: 620px;
+      margin: 0 auto 18px;
+      color: var(--pearl);
+      font-size: clamp(1.1rem, 2vw, 1.45rem);
+      line-height: 1.5;
+    }
+
+    .author {
+      color: var(--gold);
+      font-size: 1.05rem;
+      font-style: italic;
+      margin-bottom: 34px;
+    }
+
+    .frequency {
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto 34px;
+      opacity: 0.95;
+      filter: drop-shadow(0 0 8px rgba(244, 216, 137, 0.45));
+    }
+
+    .description {
+      max-width: 660px;
+      margin: 0 auto 34px;
+      color: var(--muted);
+      font-size: 1.04rem;
+      line-height: 1.8;
+    }
+
+    .cta-row {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 14px 24px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 0.92rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+    }
+
+    .button.primary {
+      color: #07101d;
+      background: linear-gradient(135deg, var(--soft-gold), var(--gold));
+      box-shadow: 0 0 26px rgba(244, 216, 137, 0.28);
+    }
+
+    .button.secondary {
+      color: var(--gold);
+      border: 1px solid rgba(244, 216, 137, 0.48);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 34px rgba(244, 216, 137, 0.35);
+    }
+
+    .tree-symbol {
+      margin: 52px auto 0;
+      width: min(280px, 65vw);
+      opacity: 0.9;
+      filter: drop-shadow(0 0 16px rgba(244, 216, 137, 0.42));
+    }
+
+    .footer-note {
+      margin-top: 28px;
+      color: rgba(248, 245, 233, 0.58);
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+    }
+
+    @media (max-width: 880px) {
+      .landing {
+        grid-template-columns: 1fr;
+        gap: 34px;
+      }
+
+      .cover {
+        width: min(320px, 82vw);
+      }
+
+      .content {
+        order: -1;
+      }
+
+      .page {
+        padding-top: 80px;
+      }
+
+      .orb {
+        width: 160px;
+        height: 160px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <div class="orb" aria-hidden="true"></div>
+
+    <section class="landing">
+      <div class="cover-wrap">
+        <img
+          class="cover"
+          src="vocoder_of_life_and_divinity.png"
+          alt="Book cover for The Vocoder Of Life by James Ritchie"
+        />
+      </div>
+
+      <div class="content">
+        <p class="kicker">A theological meditation on divine resonance</p>
+
+        <svg class="frequency" viewBox="0 0 900 130" role="img" aria-label="Golden resonant frequency waveform">
+          <defs>
+            <linearGradient id="goldLine" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#f4d889" stop-opacity="0" />
+              <stop offset="20%" stop-color="#f4d889" stop-opacity="0.95" />
+              <stop offset="50%" stop-color="#fff1b8" stop-opacity="1" />
+              <stop offset="80%" stop-color="#f4d889" stop-opacity="0.95" />
+              <stop offset="100%" stop-color="#f4d889" stop-opacity="0" />
+            </linearGradient>
+          </defs>
+
+          <path
+            d="M0 65 L90 65
+               C120 65, 128 18, 142 18
+               C162 18, 170 108, 190 108
+               C210 108, 218 34, 238 34
+               C260 34, 268 82, 286 82
+               L330 82
+               C345 82, 350 50, 362 50
+               C374 50, 380 78, 392 78
+               L430 78
+               C445 78, 448 44, 456 44
+               C468 44, 472 92, 486 92
+               C506 92, 510 38, 528 38
+               C546 38, 552 72, 570 72
+               L618 72
+               C640 72, 650 24, 672 24
+               C698 24, 710 106, 736 106
+               C762 106, 772 54, 796 54
+               C822 54, 835 65, 900 65"
+            fill="none"
+            stroke="url(#goldLine)"
+            stroke-width="3"
+          />
+
+          <g stroke="#fff1b8" stroke-width="2" opacity="0.6">
+            <line x1="145" y1="15" x2="145" y2="115" />
+            <line x1="190" y1="28" x2="190" y2="102" />
+            <line x1="238" y1="20" x2="238" y2="110" />
+            <line x1="456" y1="28" x2="456" y2="104" />
+            <line x1="528" y1="20" x2="528" y2="108" />
+            <line x1="672" y1="14" x2="672" y2="118" />
+            <line x1="736" y1="28" x2="736" y2="102" />
+            <line x1="796" y1="24" x2="796" y2="106" />
+          </g>
+        </svg>
+
+        <h1>
+          The Vocoder
+          <span>Of Life</span>
+        </h1>
+
+        <p class="subtitle">
+          God, Divine Will, &amp; Angelic Forces Of Heaven
+        </p>
+
+        <p class="author">James Ritchie</p>
+
+        <p class="description">
+          A philosophical and theological exploration of life as sacred carrier:
+          the divine chant of God, and teh special relstionship with the universe,
+          through which all angelic forces of heaven become one with our lord snd saviour.
+        </p>
+
+        <div class="cta-row">
+          <a href="#" class="button primary">Read the Vision</a>
+          <a href="#" class="button secondary">About the Book</a>
+        </div>
+
+        <svg class="tree-symbol" viewBox="0 0 260 260" aria-hidden="true">
+          <defs>
+            <radialGradient id="treeGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#fff1b8" stop-opacity="1" />
+              <stop offset="45%" stop-color="#f4d889" stop-opacity="0.7" />
+              <stop offset="100%" stop-color="#f4d889" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+
+          <circle cx="130" cy="150" r="110" fill="url(#treeGlow)" opacity="0.14" />
+
+          <g fill="none" stroke="#f4d889" stroke-linecap="round">
+            <path d="M130 230 C130 178, 130 136, 130 74" stroke-width="5" />
+            <path d="M130 142 C100 120, 78 96, 62 62" stroke-width="3" />
+            <path d="M130 134 C164 112, 186 88, 204 56" stroke-width="3" />
+            <path d="M130 168 C96 154, 70 136, 42 104" stroke-width="2" />
+            <path d="M130 168 C168 150, 194 130, 224 98" stroke-width="2" />
+            <path d="M130 104 C112 88, 102 66, 94 38" stroke-width="2" />
+            <path d="M130 104 C150 84, 160 64, 168 36" stroke-width="2" />
+            <path d="M130 206 C98 218, 72 226, 44 230" stroke-width="2" />
+            <path d="M130 206 C164 218, 192 226, 220 230" stroke-width="2" />
+          </g>
+
+          <g fill="#fff1b8" opacity="0.85">
+            <circle cx="62" cy="62" r="3" />
+            <circle cx="204" cy="56" r="3" />
+            <circle cx="42" cy="104" r="2.5" />
+            <circle cx="224" cy="98" r="2.5" />
+            <circle cx="94" cy="38" r="2.5" />
+            <circle cx="168" cy="36" r="2.5" />
+            <circle cx="130" cy="74" r="3" />
+            <circle cx="86" cy="132" r="2" />
+            <circle cx="174" cy="130" r="2" />
+          </g>
+
+          <ellipse cx="130" cy="232" rx="90" ry="14" fill="none" stroke="#f4d889" opacity="0.45" />
+          <ellipse cx="130" cy="232" rx="62" ry="8" fill="none" stroke="#fff1b8" opacity="0.35" />
+        </svg>
+
+        <p class="footer-note">
+          Divine signal · Resonant will · Living presence
+        </p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
