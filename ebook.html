@@ -1,0 +1,768 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>The Vocoder Of Life | Ebook</title>
+
+  <style>
+    :root {
+      --midnight: #030914;
+      --deep-blue: #071833;
+      --gold: #f4d889;
+      --soft-gold: #fff1b8;
+      --pearl: #f8f5e9;
+      --paper: #f7f0dc;
+      --ink: #19150d;
+      --muted: #b8c4d8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--pearl);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255, 229, 156, 0.28), transparent 20%),
+        radial-gradient(circle at 50% 76%, rgba(244, 216, 137, 0.12), transparent 28%),
+        radial-gradient(circle at 12% 20%, rgba(45, 108, 181, 0.16), transparent 26%),
+        radial-gradient(circle at 88% 72%, rgba(45, 108, 181, 0.14), transparent 30%),
+        linear-gradient(180deg, #020713 0%, #071833 48%, #020713 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.75) 1px, transparent 1px),
+        radial-gradient(circle, rgba(244,216,137,0.45) 1px, transparent 1px);
+      background-size: 90px 90px, 145px 145px;
+      opacity: 0.16;
+      z-index: 0;
+    }
+
+    .page {
+      position: relative;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 42px 24px 64px;
+      overflow: hidden;
+    }
+
+    .orb {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      width: 210px;
+      height: 210px;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      background:
+        radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,241,184,0.98) 7%, rgba(244,216,137,0.42) 24%, transparent 66%);
+      box-shadow:
+        0 0 48px rgba(255, 238, 174, 0.88),
+        0 0 128px rgba(244, 216, 137, 0.42),
+        0 0 230px rgba(244, 216, 137, 0.22);
+      animation:
+        orbDrift 9s ease-in-out infinite,
+        orbPulse 4.8s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    .orb::before,
+    .orb::after {
+      content: "";
+      position: absolute;
+      border: 1px solid rgba(244, 216, 137, 0.2);
+      border-radius: 50%;
+      animation: haloBreathe 6s ease-in-out infinite;
+    }
+
+    .orb::before {
+      inset: -58px;
+    }
+
+    .orb::after {
+      inset: -102px;
+      border-color: rgba(244, 216, 137, 0.11);
+      animation-delay: 1.2s;
+    }
+
+    @keyframes orbDrift {
+      0% {
+        transform: translateX(-50%) translate3d(0, 0, 0);
+      }
+
+      25% {
+        transform: translateX(-50%) translate3d(14px, 8px, 0);
+      }
+
+      50% {
+        transform: translateX(-50%) translate3d(-10px, 18px, 0);
+      }
+
+      75% {
+        transform: translateX(-50%) translate3d(12px, 4px, 0);
+      }
+
+      100% {
+        transform: translateX(-50%) translate3d(0, 0, 0);
+      }
+    }
+
+    @keyframes orbPulse {
+      0%, 100% {
+        box-shadow:
+          0 0 48px rgba(255, 238, 174, 0.88),
+          0 0 128px rgba(244, 216, 137, 0.42),
+          0 0 230px rgba(244, 216, 137, 0.22);
+        opacity: 0.95;
+      }
+
+      50% {
+        box-shadow:
+          0 0 72px rgba(255, 238, 174, 1),
+          0 0 168px rgba(244, 216, 137, 0.58),
+          0 0 300px rgba(244, 216, 137, 0.32);
+        opacity: 1;
+      }
+    }
+
+    @keyframes haloBreathe {
+      0%, 100% {
+        transform: scale(0.96);
+        opacity: 0.55;
+      }
+
+      50% {
+        transform: scale(1.04);
+        opacity: 0.95;
+      }
+    }
+
+    .ebook-wrap {
+      position: relative;
+      z-index: 2;
+      width: min(1120px, 100%);
+      display: grid;
+      grid-template-columns: 1fr;
+      justify-items: center;
+      gap: 26px;
+      padding-top: 54px;
+    }
+
+    .top-nav {
+      width: min(980px, 100%);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      color: var(--muted);
+    }
+
+    .back-link {
+      color: var(--gold);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+      border: 1px solid rgba(244, 216, 137, 0.36);
+      border-radius: 999px;
+      padding: 10px 16px;
+      background: rgba(255, 255, 255, 0.03);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .back-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 26px rgba(244, 216, 137, 0.24);
+    }
+
+    .status {
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(248, 245, 233, 0.62);
+    }
+
+    .hero-copy {
+      text-align: center;
+      max-width: 760px;
+      margin-bottom: 8px;
+    }
+
+    .kicker {
+      color: var(--gold);
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      font-size: 0.76rem;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      color: var(--soft-gold);
+      font-size: clamp(2.4rem, 7vw, 5.4rem);
+      font-weight: 500;
+      line-height: 0.92;
+      text-shadow:
+        0 0 18px rgba(244, 216, 137, 0.32),
+        0 0 46px rgba(244, 216, 137, 0.14);
+      margin-bottom: 16px;
+    }
+
+    .subtitle {
+      color: var(--pearl);
+      font-size: clamp(1rem, 2vw, 1.28rem);
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .author {
+      color: var(--gold);
+      font-style: italic;
+      font-size: 1rem;
+    }
+
+    .book-stage {
+      width: min(940px, 100%);
+      min-height: 620px;
+      display: grid;
+      place-items: center;
+      perspective: 1800px;
+      margin-top: 12px;
+    }
+
+    .book {
+      position: relative;
+      width: min(820px, 92vw);
+      height: min(560px, 76vw);
+      max-height: 620px;
+      transform-style: preserve-3d;
+      filter: drop-shadow(0 28px 80px rgba(0, 0, 0, 0.68));
+    }
+
+    .book::before {
+      content: "";
+      position: absolute;
+      inset: 6% 3% 2% 6%;
+      border-radius: 22px;
+      background: rgba(244, 216, 137, 0.18);
+      filter: blur(44px);
+      z-index: -1;
+    }
+
+    .paper-spread {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--paper);
+      box-shadow:
+        inset 0 0 36px rgba(70, 47, 12, 0.18),
+        0 0 0 1px rgba(244, 216, 137, 0.25);
+      opacity: 0;
+      transform: translateX(18px) rotateY(5deg);
+      transition:
+        opacity 0.8s ease 0.15s,
+        transform 0.8s ease 0.15s;
+    }
+
+    .book.open .paper-spread {
+      opacity: 1;
+      transform: translateX(0) rotateY(0deg);
+    }
+
+    .page-left,
+    .page-right {
+      position: relative;
+      padding: clamp(26px, 4vw, 48px);
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.08), transparent 7%, transparent 94%, rgba(0,0,0,0.08)),
+        radial-gradient(circle at 50% 0%, rgba(244, 216, 137, 0.2), transparent 36%),
+        var(--paper);
+      overflow: auto;
+    }
+
+    .page-left {
+      border-right: 1px solid rgba(70, 47, 12, 0.18);
+    }
+
+    .page-right {
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.06), transparent 9%, transparent 94%, rgba(0,0,0,0.04)),
+        radial-gradient(circle at 50% 0%, rgba(244, 216, 137, 0.16), transparent 38%),
+        #fbf4df;
+    }
+
+    .book-title-page {
+      display: grid;
+      align-content: center;
+      min-height: 100%;
+      text-align: center;
+    }
+
+    .book-title-page .mini {
+      color: #7d6124;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 0.74rem;
+      margin-bottom: 20px;
+    }
+
+    .book-title-page h2 {
+      color: #241b0c;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      font-weight: 500;
+      line-height: 0.95;
+      margin-bottom: 18px;
+    }
+
+    .book-title-page p {
+      color: #5e4a22;
+      font-size: 1rem;
+      line-height: 1.7;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    .intro-page h2 {
+      color: #241b0c;
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    .intro-page .chapter-label {
+      color: #8a6c28;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-size: 0.74rem;
+      margin-bottom: 24px;
+    }
+
+    .copy-space {
+      min-height: 330px;
+      border: 1px dashed rgba(70, 47, 12, 0.24);
+      border-radius: 14px;
+      padding: 22px;
+      background:
+        linear-gradient(rgba(25, 21, 13, 0.035) 1px, transparent 1px),
+        rgba(255, 255, 255, 0.22);
+      background-size: 100% 32px;
+      color: #2e2515;
+      font-size: 1.05rem;
+      line-height: 1.85;
+    }
+
+    .copy-space p {
+      margin-bottom: 1rem;
+    }
+
+    .paste-note {
+      color: rgba(46, 37, 21, 0.45);
+      font-style: italic;
+    }
+
+    .page-number {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(46, 37, 21, 0.45);
+      font-size: 0.85rem;
+    }
+
+    .cover-panel {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 50%;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      cursor: pointer;
+      transform-origin: left center;
+      transform-style: preserve-3d;
+      transition:
+        transform 1.25s cubic-bezier(.2,.72,.15,1),
+        filter 0.4s ease;
+      z-index: 5;
+      border-radius: 14px 0 0 14px;
+    }
+
+    .cover-panel:hover {
+      filter: brightness(1.08);
+    }
+
+    .book.open .cover-panel {
+      transform: rotateY(-168deg);
+      cursor: default;
+    }
+
+    .cover-front,
+    .cover-back {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border-radius: 14px 0 0 14px;
+      overflow: hidden;
+    }
+
+    .cover-front {
+      background: #051025;
+      box-shadow:
+        inset -16px 0 28px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(244, 216, 137, 0.28);
+    }
+
+    .cover-front img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .cover-back {
+      transform: rotateY(180deg);
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.18), transparent 16%),
+        radial-gradient(circle at 50% 22%, rgba(244,216,137,0.22), transparent 28%),
+        #0a1730;
+      border-right: 1px solid rgba(244, 216, 137, 0.28);
+    }
+
+    .cover-back::before {
+      content: "";
+      position: absolute;
+      inset: 24px;
+      border: 1px solid rgba(244, 216, 137, 0.34);
+      border-radius: 10px;
+    }
+
+    .spine-shadow {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 26px;
+      transform: translateX(-50%);
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.18), rgba(255,255,255,0.12), rgba(0,0,0,0.18));
+      opacity: 0;
+      z-index: 3;
+      transition: opacity 0.6s ease;
+      pointer-events: none;
+    }
+
+    .book.open .spine-shadow {
+      opacity: 1;
+    }
+
+    .open-hint {
+      position: absolute;
+      bottom: -56px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(248, 245, 233, 0.72);
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+      transition: opacity 0.45s ease;
+      white-space: nowrap;
+    }
+
+    .book.open .open-hint {
+      opacity: 0;
+    }
+
+    .controls {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 34px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 13px 22px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 0.86rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(244, 216, 137, 0.42);
+      background: rgba(255, 255, 255, 0.03);
+      transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+      cursor: pointer;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .button.gold {
+      color: #07101d;
+      background: linear-gradient(135deg, var(--soft-gold), var(--gold));
+      border-color: transparent;
+      box-shadow: 0 0 26px rgba(244, 216, 137, 0.26);
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 28px rgba(244, 216, 137, 0.28);
+    }
+
+    .frequency-footer {
+      width: min(720px, 94vw);
+      opacity: 0.82;
+      filter: drop-shadow(0 0 8px rgba(244, 216, 137, 0.35));
+      margin-top: 16px;
+    }
+
+    @media (max-width: 760px) {
+      .top-nav {
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .book-stage {
+        min-height: auto;
+        padding: 20px 0 70px;
+      }
+
+      .book {
+        width: min(440px, 92vw);
+        height: 680px;
+      }
+
+      .paper-spread {
+        grid-template-columns: 1fr;
+      }
+
+      .page-left {
+        display: none;
+      }
+
+      .page-right {
+        border-radius: 14px;
+      }
+
+      .cover-panel {
+        width: 100%;
+        border-radius: 14px;
+        transform-origin: left center;
+      }
+
+      .cover-front,
+      .cover-back {
+        border-radius: 14px;
+      }
+
+      .book.open .cover-panel {
+        transform: rotateY(-162deg);
+      }
+
+      .spine-shadow {
+        display: none;
+      }
+
+      .orb {
+        width: 150px;
+        height: 150px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .orb,
+      .orb::before,
+      .orb::after {
+        animation: none;
+      }
+
+      .cover-panel,
+      .paper-spread,
+      .open-hint {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <div class="orb" aria-hidden="true"></div>
+
+    <section class="ebook-wrap">
+      <nav class="top-nav" aria-label="Ebook navigation">
+        <a class="back-link" href="index.html">← Back to Front Page</a>
+        <p class="status">Click the cover to open</p>
+      </nav>
+
+      <header class="hero-copy">
+        <p class="kicker">The Ebook</p>
+
+        <h1>The Vocoder Of Life</h1>
+
+        <p class="subtitle">
+          God, Divine Will, &amp; Angelic Forces Of Heaven
+        </p>
+
+        <p class="author">James Ritchie</p>
+      </header>
+
+      <section class="book-stage" aria-label="Interactive ebook preview">
+        <div class="book" id="book">
+          <div class="paper-spread" aria-hidden="false">
+            <article class="page-left">
+              <div class="book-title-page">
+                <p class="mini">A theological meditation</p>
+
+                <h2>
+                  The Vocoder<br />
+                  Of Life
+                </h2>
+
+                <p>
+                  God as divine source. Resonant will as sacred energy.
+                  Life as the luminous tree through which presence becomes visible.
+                </p>
+              </div>
+
+              <span class="page-number">i</span>
+            </article>
+
+            <article class="page-right intro-page">
+              <p class="chapter-label">Sample Introduction Page</p>
+
+              <h2>Introduction</h2>
+
+              <div class="copy-space">
+                <!--
+                  PASTE THE EXACT WORDS FROM YOUR BOOK HERE.
+
+                  Example:
+
+                  <p>Your first paragraph goes here.</p>
+
+                  <p>Your second paragraph goes here.</p>
+                -->
+
+                <p class="paste-note">
+                  Paste your exact introduction text here.
+                </p>
+              </div>
+
+              <span class="page-number">1</span>
+            </article>
+          </div>
+
+          <button class="cover-panel" id="coverButton" type="button" aria-label="Open the ebook cover">
+            <span class="cover-front">
+              <img
+                src="https://pub-fcb7451138fa4bf39b6e0d6f01a687a6.r2.dev/IMG_4694.png"
+                alt="Cover of The Vocoder Of Life by James Ritchie"
+              />
+            </span>
+
+            <span class="cover-back" aria-hidden="true"></span>
+          </button>
+
+          <div class="spine-shadow" aria-hidden="true"></div>
+
+          <p class="open-hint">Click cover to open</p>
+        </div>
+      </section>
+
+      <div class="controls">
+        <button class="button gold" type="button" id="openBook">Open Book</button>
+        <button class="button" type="button" id="closeBook">Close Book</button>
+        <a class="button" href="index.html">Return Home</a>
+      </div>
+
+      <svg class="frequency-footer" viewBox="0 0 900 130" role="img" aria-label="Golden resonant frequency waveform">
+        <defs>
+          <linearGradient id="goldLine" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#f4d889" stop-opacity="0" />
+            <stop offset="20%" stop-color="#f4d889" stop-opacity="0.95" />
+            <stop offset="50%" stop-color="#fff1b8" stop-opacity="1" />
+            <stop offset="80%" stop-color="#f4d889" stop-opacity="0.95" />
+            <stop offset="100%" stop-color="#f4d889" stop-opacity="0" />
+          </linearGradient>
+        </defs>
+
+        <path
+          d="M0 65 L90 65
+             C120 65, 128 18, 142 18
+             C162 18, 170 108, 190 108
+             C210 108, 218 34, 238 34
+             C260 34, 268 82, 286 82
+             L330 82
+             C345 82, 350 50, 362 50
+             C374 50, 380 78, 392 78
+             L430 78
+             C445 78, 448 44, 456 44
+             C468 44, 472 92, 486 92
+             C506 92, 510 38, 528 38
+             C546 38, 552 72, 570 72
+             L618 72
+             C640 72, 650 24, 672 24
+             C698 24, 710 106, 736 106
+             C762 106, 772 54, 796 54
+             C822 54, 835 65, 900 65"
+          fill="none"
+          stroke="url(#goldLine)"
+          stroke-width="3"
+        />
+      </svg>
+    </section>
+  </main>
+
+  <script>
+    const book = document.getElementById("book");
+    const coverButton = document.getElementById("coverButton");
+    const openBook = document.getElementById("openBook");
+    const closeBook = document.getElementById("closeBook");
+
+    function openTheBook() {
+      book.classList.add("open");
+      coverButton.setAttribute("aria-label", "The ebook is open");
+    }
+
+    function closeTheBook() {
+      book.classList.remove("open");
+      coverButton.setAttribute("aria-label", "Open the ebook cover");
+    }
+
+    coverButton.addEventListener("click", openTheBook);
+    openBook.addEventListener("click", openTheBook);
+    closeBook.addEventListener("click", closeTheBook);
+  </script>
+</body>
+</html>
+```
