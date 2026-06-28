@@ -1,4 +1,4 @@
-```html
+```html id="ebook-html"
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,6 +15,7 @@
       --soft-gold: #fff1b8;
       --pearl: #f8f5e9;
       --paper: #f7f0dc;
+      --paper-light: #fbf4df;
       --ink: #19150d;
       --muted: #b8c4d8;
     }
@@ -250,8 +251,8 @@
     .book {
       position: relative;
       width: min(820px, 92vw);
-      height: min(560px, 76vw);
-      max-height: 620px;
+      height: min(590px, 76vw);
+      max-height: 660px;
       transform-style: preserve-3d;
       filter: drop-shadow(0 28px 80px rgba(0, 0, 0, 0.68));
     }
@@ -278,21 +279,22 @@
         inset 0 0 36px rgba(70, 47, 12, 0.18),
         0 0 0 1px rgba(244, 216, 137, 0.25);
       opacity: 0;
+      pointer-events: none;
       transform: translateX(18px) rotateY(5deg);
       transition:
-        opacity 0.8s ease 0.15s,
-        transform 0.8s ease 0.15s;
+        opacity 0.55s ease,
+        transform 0.55s ease;
     }
 
-    .book.open .paper-spread {
+    .book.open .paper-spread.active {
       opacity: 1;
+      pointer-events: auto;
       transform: translateX(0) rotateY(0deg);
     }
 
-    .page-left,
-    .page-right {
+    .book-page {
       position: relative;
-      padding: clamp(26px, 4vw, 48px);
+      padding: clamp(24px, 3.5vw, 42px);
       color: var(--ink);
       background:
         linear-gradient(90deg, rgba(0,0,0,0.08), transparent 7%, transparent 94%, rgba(0,0,0,0.08)),
@@ -301,89 +303,46 @@
       overflow: auto;
     }
 
-    .page-left {
-      border-right: 1px solid rgba(70, 47, 12, 0.18);
-    }
-
-    .page-right {
+    .book-page.right {
       background:
         linear-gradient(90deg, rgba(0,0,0,0.06), transparent 9%, transparent 94%, rgba(0,0,0,0.04)),
         radial-gradient(circle at 50% 0%, rgba(244, 216, 137, 0.16), transparent 38%),
-        #fbf4df;
+        var(--paper-light);
     }
 
-    .book-title-page {
-      display: grid;
-      align-content: center;
-      min-height: 100%;
-      text-align: center;
+    .book-page.left {
+      border-right: 1px solid rgba(70, 47, 12, 0.18);
     }
 
-    .book-title-page .mini {
-      color: #7d6124;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      font-size: 0.74rem;
-      margin-bottom: 20px;
-    }
-
-    .book-title-page h2 {
+    .book-page h2 {
       color: #241b0c;
-      font-size: clamp(2rem, 4vw, 3.4rem);
-      font-weight: 500;
-      line-height: 0.95;
-      margin-bottom: 18px;
-    }
-
-    .book-title-page p {
-      color: #5e4a22;
-      font-size: 1rem;
-      line-height: 1.7;
-      max-width: 320px;
-      margin: 0 auto;
-    }
-
-    .intro-page h2 {
-      color: #241b0c;
-      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-size: clamp(1.5rem, 2.6vw, 2.25rem);
       font-weight: 500;
       margin-bottom: 6px;
     }
 
-    .intro-page .chapter-label {
+    .chapter-label {
       color: #8a6c28;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      font-size: 0.74rem;
-      margin-bottom: 24px;
+      font-size: 0.72rem;
+      margin-bottom: 20px;
     }
 
-    .copy-space {
-      min-height: 330px;
-      border: 1px dashed rgba(70, 47, 12, 0.24);
-      border-radius: 14px;
-      padding: 22px;
-      background:
-        linear-gradient(rgba(25, 21, 13, 0.035) 1px, transparent 1px),
-        rgba(255, 255, 255, 0.22);
-      background-size: 100% 32px;
+    .book-copy {
       color: #2e2515;
-      font-size: 1.05rem;
-      line-height: 1.85;
+      font-size: clamp(0.9rem, 1.12vw, 1rem);
+      line-height: 1.72;
+      padding-bottom: 34px;
     }
 
-    .copy-space p {
+    .book-copy p {
       margin-bottom: 1rem;
-    }
-
-    .paste-note {
-      color: rgba(46, 37, 21, 0.45);
-      font-style: italic;
     }
 
     .page-number {
       position: absolute;
-      bottom: 20px;
+      bottom: 18px;
       left: 50%;
       transform: translateX(-50%);
       color: rgba(46, 37, 21, 0.45);
@@ -534,6 +493,21 @@
       box-shadow: 0 0 28px rgba(244, 216, 137, 0.28);
     }
 
+    .button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .page-indicator {
+      color: rgba(248, 245, 233, 0.7);
+      font-size: 0.9rem;
+      letter-spacing: 0.06em;
+      min-width: 160px;
+      text-align: center;
+    }
+
     .frequency-footer {
       width: min(720px, 94vw);
       opacity: 0.82;
@@ -554,18 +528,18 @@
 
       .book {
         width: min(440px, 92vw);
-        height: 680px;
+        height: 720px;
       }
 
       .paper-spread {
         grid-template-columns: 1fr;
       }
 
-      .page-left {
+      .book-page.left {
         display: none;
       }
 
-      .page-right {
+      .book-page.right {
         border-radius: 14px;
       }
 
@@ -591,6 +565,10 @@
       .orb {
         width: 150px;
         height: 150px;
+      }
+
+      .status {
+        text-align: center;
       }
     }
 
@@ -621,7 +599,7 @@
     <section class="ebook-wrap">
       <nav class="top-nav" aria-label="Ebook navigation">
         <a class="back-link" href="index.html">← Back to Front Page</a>
-        <p class="status">Click the cover to open</p>
+        <p class="status">Click the cover to open. The sample opens on pages 2 and 3.</p>
       </nav>
 
       <header class="hero-copy">
@@ -638,56 +616,160 @@
 
       <section class="book-stage" aria-label="Interactive ebook preview">
         <div class="book" id="book">
-          <div class="paper-spread" aria-hidden="false">
-            <article class="page-left">
-              <div class="book-title-page">
-                <p class="mini">A theological meditation</p>
+          <div class="paper-spread" data-label="Page 1">
+            <article class="book-page left">
+              <p class="chapter-label">Inside Cover</p>
 
-                <h2>
-                  The Vocoder<br />
-                  Of Life
-                </h2>
+              <h2>The Vocoder Of Life</h2>
+
+              <div class="book-copy">
+                <p>
+                  A theological meditation on divine resonance, sacred breath,
+                  and life as a living carrier of divine will.
+                </p>
 
                 <p>
-                  This is a sample text only. It is strictly forbidden to copy and share any contents from this text, including non-commercial sharing.
+                  This sample begins with the introduction to the work.
                 </p>
               </div>
 
-              <span class="page-number">i</span>
+              <span class="page-number">inside cover</span>
             </article>
 
-            <article class="page-right intro-page">
-              <p class="chapter-label">Sample Introduction Page</p>
+            <article class="book-page right">
+              <p class="chapter-label">Introduction</p>
 
-              <h2>Introduction</h2>
+              <h2>Page One</h2>
 
-              <div class="copy-space">
-                <!--
-                  PASTE THE EXACT WORDS FROM YOUR BOOK HERE.
+              <div class="book-copy">
+                <p>
+                  This contemplation on what I refer to as the vocoder of life is drawn first and foremost from the Greek concept of έμπνευση (émpnefsi, "divine inspiration"), etymologically owing to the Ancient Greek ἔμπνευσις (émpneusis, “blowing in”) and semantically influenced by the French inspiration. The term vocoder, therefore, is rather fitting. Vocoder is a portmanteau of voice and encoder. In electronic music, vocoder is a device designed to transform voice signals.
+                </p>
 
-                  Example:
-
-                  <p>
-	This contemplation on what I refer to as the vocoder of life is drawn first and foremost from the Greek concept of έμπνευση (émpnefsi, "divine inspiration"), etymologically owing to the Ancient Greek ἔμπνευσις (émpneusis, “blowing in”) and semantically influenced by the French inspiration. The term vocoder, therefore, is rather fitting. Vocoder is a portmanteau of voice and encoder. In electronic music, vocoder is a device designed to transform voice signals. The voice, consisting of many harmonic resonances, is put through the device, where the sound is modulated, filtered and output through several filtered channels, each consisting of certain frequency bands derived from the source-signal. Analogically, I apply this concept herein with regard to divine will as a signal (or voice) that passes through the soul (our vocoder) and is modulated and expressed through the psychological characteristics and behaviours, collectively through individuals sharing this divine will. In order to illustrate this vocoder effect, I draw on culturally significant symbols and phenomena which embody or ritualise the common, collective, divine will. 
-</p>
-
-                  <p>Many theologians have written about inspiration, or cognate terms such as θεόπνευστος (theopneustos, "divinely inspired"). Theopneustos in 2 Timothy 3:16 is usually translated as “God-breathed” or “inspired by God,” and the exact term is a key Scriptural anchor for later doctrine. This language has not been confined to Scripture, but has also been used to describe holy people and prophets. For example, Ignatius of Antioch described prophets as being inspired by grace, and Theophilus described "men of God" as spirit-bearers, inspired by God to be wise. Broadly speaking, theologians have sought to understand divine inspiration as some form of communication, animation, or illumination from God. In this thesis, I set out a further conceptual framework for understanding divine inspiration, not only as a doctrine of communication, but as an embodied process of becoming the living word of God. 
-</p>
-
-                <p>During conception and early development, the individual has no understanding of the biological processes shaping their existence. Yet, cells divide and neural structures form without the forethought of the child or parent. Unconscious processes such as genetic sequences influence the very formation of neural pathways in the nervous system, which influence early psychological development. As the child engages with the world, they are exposed to common experiences: meeting their parent(s), being held, being fed, being soothed, etc. The biological processes of becoming, which were once innate, become increasingly influenced by exogenous factors. These exogenous factors start to be arranged by rituals, and symbols start to emerge. For example, bedtime for the child might have a certain shape to it, and the child might learn to associate a story or image with that special time. As the child grows older, they start to develop systems of representation, expectations and beliefs about the world that are functional (if not ideal!). These developments in perception, goal orientation, belief systems, etc, become modulators for increasingly complex world-systems, such as social relationships, as well as self-representation within increasingly complex world-systems.</p>
-
-                <p>One of the primary cognitive challenges for young children is early moral development. Children learn basic notions of right and wrong in the earliest world-systems (the family). Ritualised care, consistency, and warmth need to hold the child, while placing enough demand on them to modulate their behaviours. For example, a child needs to learn to cooperate during bedtime rituals. They might not want to go to sleep, and they may feel distressed, but they learn to adapt to the demands placed upon them by their caregivers. Lessons like this are usually only possible where the caregiver's consistency and warmth are sufficient to hold the child in the ritual, meaning that world-systems must not only meet an isolated need such as sleep, but also function as good containers. Bion's concept of containment helps explain how a child's distress becomes thinkable through the caregiver's response. This is also true of world-systems at larger scales, which must not only impose rules on society, but contain the needs of people well enough to make life morally liveable. </p>
-
-                <p>Large cities constitute unique world-systems, where the complexity of containment is huge, and the strain on human life is also remarkable...</p>
-                
-                -->
-
-                <p class="paste-note">
-                  
+                <p>
+                  The voice, consisting of many harmonic resonances, is put through the device, where the sound is modulated, filtered and output through several filtered channels, each consisting of certain frequency bands derived from the source-signal. Analogically, I apply this concept herein with regard to divine will as a signal (or voice) that passes through the soul (our vocoder) and is modulated and expressed through the psychological characteristics and behaviours, collectively through individuals sharing this divine will.
                 </p>
               </div>
 
               <span class="page-number">1</span>
+            </article>
+          </div>
+
+          <div class="paper-spread active" data-label="Pages 2-3">
+            <article class="book-page left">
+              <p class="chapter-label">Introduction Continued</p>
+
+              <h2>Page Two</h2>
+
+              <div class="book-copy">
+                <p>
+                  In order to illustrate this vocoder effect, I draw on culturally significant symbols and phenomena which embody or ritualise the common, collective, divine will.
+                </p>
+
+                <p>
+                  Many theologians have written about inspiration, or cognate terms such as θεόπνευστος (theopneustos, "divinely inspired"). Theopneustos in 2 Timothy 3:16 is usually translated as “God-breathed” or “inspired by God,” and the exact term is a key Scriptural anchor for later doctrine.
+                </p>
+
+                <p>
+                  This language has not been confined to Scripture, but has also been used to describe holy people and prophets. For example, Ignatius of Antioch described prophets as being inspired by grace, and Theophilus described "men of God" as spirit-bearers, inspired by God to be wise.
+                </p>
+              </div>
+
+              <span class="page-number">2</span>
+            </article>
+
+            <article class="book-page right">
+              <p class="chapter-label">Introduction Continued</p>
+
+              <h2>Page Three</h2>
+
+              <div class="book-copy">
+                <p>
+                  Broadly speaking, theologians have sought to understand divine inspiration as some form of communication, animation, or illumination from God. In this thesis, I set out a further conceptual framework for understanding divine inspiration, not only as a doctrine of communication, but as an embodied process of becoming the living word of God.
+                </p>
+
+                <p>
+                  During conception and early development, the individual has no understanding of the biological processes shaping their existence. Yet, cells divide and neural structures form without the forethought of the child or parent.
+                </p>
+              </div>
+
+              <span class="page-number">3</span>
+            </article>
+          </div>
+
+          <div class="paper-spread" data-label="Pages 4-5">
+            <article class="book-page left">
+              <p class="chapter-label">Introduction Continued</p>
+
+              <h2>Page Four</h2>
+
+              <div class="book-copy">
+                <p>
+                  Unconscious processes such as genetic sequences influence the very formation of neural pathways in the nervous system, which influence early psychological development. As the child engages with the world, they are exposed to common experiences: meeting their parent(s), being held, being fed, being soothed, etc.
+                </p>
+
+                <p>
+                  The biological processes of becoming, which were once innate, become increasingly influenced by exogenous factors. These exogenous factors start to be arranged by rituals, and symbols start to emerge. For example, bedtime for the child might have a certain shape to it, and the child might learn to associate a story or image with that special time.
+                </p>
+              </div>
+
+              <span class="page-number">4</span>
+            </article>
+
+            <article class="book-page right">
+              <p class="chapter-label">Introduction Continued</p>
+
+              <h2>Page Five</h2>
+
+              <div class="book-copy">
+                <p>
+                  As the child grows older, they start to develop systems of representation, expectations and beliefs about the world that are functional (if not ideal!). These developments in perception, goal orientation, belief systems, etc, become modulators for increasingly complex world-systems, such as social relationships, as well as self-representation within increasingly complex world-systems.
+                </p>
+
+                <p>
+                  One of the primary cognitive challenges for young children is early moral development. Children learn basic notions of right and wrong in the earliest world-systems (the family).
+                </p>
+              </div>
+
+              <span class="page-number">5</span>
+            </article>
+          </div>
+
+          <div class="paper-spread" data-label="Pages 6-7">
+            <article class="book-page left">
+              <p class="chapter-label">Introduction Continued</p>
+
+              <h2>Page Six</h2>
+
+              <div class="book-copy">
+                <p>
+                  Ritualised care, consistency, and warmth need to hold the child, while placing enough demand on them to modulate their behaviours. For example, a child needs to learn to cooperate during bedtime rituals. They might not want to go to sleep, and they may feel distressed, but they learn to adapt to the demands placed upon them by their caregivers.
+                </p>
+
+                <p>
+                  Lessons like this are usually only possible where the caregiver's consistency and warmth are sufficient to hold the child in the ritual, meaning that world-systems must not only meet an isolated need such as sleep, but also function as good containers.
+                </p>
+              </div>
+
+              <span class="page-number">6</span>
+            </article>
+
+            <article class="book-page right">
+              <p class="chapter-label">Introduction Continued</p>
+
+              <h2>Page Seven</h2>
+
+              <div class="book-copy">
+                <p>
+                  Bion's concept of containment helps explain how a child's distress becomes thinkable through the caregiver's response. This is also true of world-systems at larger scales, which must not only impose rules on society, but contain the needs of people well enough to make life morally liveable.
+                </p>
+
+                <p>
+                  Large cities constitute unique world-systems, where the complexity of containment is huge, and the strain on human life is also remarkable...
+                </p>
+              </div>
+
+              <span class="page-number">7</span>
             </article>
           </div>
 
@@ -711,6 +793,9 @@
       <div class="controls">
         <button class="button gold" type="button" id="openBook">Open Book</button>
         <button class="button" type="button" id="closeBook">Close Book</button>
+        <button class="button" type="button" id="prevSpread">Previous Pages</button>
+        <p class="page-indicator" id="pageIndicator">Pages 2-3</p>
+        <button class="button" type="button" id="nextSpread">Next Pages</button>
         <a class="button" href="index.html">Return Home</a>
       </div>
 
@@ -757,10 +842,27 @@
     const coverButton = document.getElementById("coverButton");
     const openBook = document.getElementById("openBook");
     const closeBook = document.getElementById("closeBook");
+    const prevSpread = document.getElementById("prevSpread");
+    const nextSpread = document.getElementById("nextSpread");
+    const pageIndicator = document.getElementById("pageIndicator");
+    const spreads = Array.from(document.querySelectorAll(".paper-spread"));
+
+    let currentSpread = 1;
+
+    function updateSpread() {
+      spreads.forEach((spread, index) => {
+        spread.classList.toggle("active", index === currentSpread);
+      });
+
+      pageIndicator.textContent = spreads[currentSpread].dataset.label;
+      prevSpread.disabled = currentSpread === 0;
+      nextSpread.disabled = currentSpread === spreads.length - 1;
+    }
 
     function openTheBook() {
       book.classList.add("open");
       coverButton.setAttribute("aria-label", "The ebook is open");
+      updateSpread();
     }
 
     function closeTheBook() {
@@ -768,9 +870,29 @@
       coverButton.setAttribute("aria-label", "Open the ebook cover");
     }
 
+    function previousPages() {
+      if (currentSpread > 0) {
+        currentSpread -= 1;
+        openTheBook();
+        updateSpread();
+      }
+    }
+
+    function nextPages() {
+      if (currentSpread < spreads.length - 1) {
+        currentSpread += 1;
+        openTheBook();
+        updateSpread();
+      }
+    }
+
     coverButton.addEventListener("click", openTheBook);
     openBook.addEventListener("click", openTheBook);
     closeBook.addEventListener("click", closeTheBook);
+    prevSpread.addEventListener("click", previousPages);
+    nextSpread.addEventListener("click", nextPages);
+
+    updateSpread();
   </script>
 </body>
 </html>
